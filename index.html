@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nainy Crush Chase</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+}
+
+#hud{
+font-size:22px;
+margin:10px;
+}
+
+canvas{
+background:#111;
+display:block;
+margin:auto;
+}
+
+#joystickBase{
+position:fixed;
+bottom:40px;
+left:40px;
+width:120px;
+height:120px;
+background:rgba(255,255,255,0.1);
+border-radius:60px;
+}
+
+#joystick{
+position:absolute;
+width:60px;
+height:60px;
+background:white;
+border-radius:30px;
+left:30px;
+top:30px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="hud">Level: 1 | Reach Shubman Gill!</div>
+
+<canvas id="game" width="420" height="420"></canvas>
+
+<div id="joystickBase">
+<div id="joystick"></div>
+</div>
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+let level=1;
+let kissing=false;
+
+let nainy={x:60,y:60};
+let shubman={x:380,y:380};
+
+let rivals=[
+{name:"Girl1",x:360,y:60},
+{name:"Girl2",x:360,y:200},
+{name:"Girl3",x:60,y:360}
+];
+
+let sara={name:"Sara",x:220,y:360};
+
+let moveX=0;
+let moveY=0;
+
+function drawCharacter(c,color,label){
+
+ctx.fillStyle=color;
+ctx.beginPath();
+ctx.arc(c.x,c.y,15,0,Math.PI*2);
+ctx.fill();
+
+ctx.fillStyle="white";
+ctx.font="12px Arial";
+ctx.fillText(label,c.x-25,c.y-20);
+
+}
+
+function drawSpeechBubble(){
+
+ctx.fillStyle="white";
+ctx.fillRect(sara.x-40,sara.y-50,140,30);
+
+ctx.fillStyle="black";
+ctx.font="12px Arial";
+ctx.fillText("Shubman is mine!",sara.x-35,sara.y-30);
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,420,420);
+
+drawCharacter(nainy,"yellow","Nainy");
+
+rivals.forEach(r=>{
+drawCharacter(r,"pink",r.name);
+});
+
+drawCharacter(sara,"red","Sara");
+
+drawCharacter(shubman,"green","Shubman Gill");
+
+if(distance(nainy,sara)<120){
+drawSpeechBubble();
+}
+
+}
+
+function distance(a,b){
+return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function checkCollisions(){
+
+for(let r of rivals){
+
+if(distance(nainy,r)<20){
+document.getElementById("hud").innerText="Caught by rival girls! Level "+level;
+resetLevel();
+}
+
+}
+
+if(distance(nainy,sara)<20){
+document.getElementById("hud").innerText="Sara caught Nainy! Level "+level;
+resetLevel();
+}
+
+if(distance(nainy,shubman)<20){
+kissScene();
+}
+
+}
+
+function resetLevel(){
+
+nainy.x=60;
+nainy.y=60;
+
+}
+
+function nextLevel(){
+
+level++;
+
+document.getElementById("hud").innerText="Level: "+level+" | Reach Shubman Gill!";
+
+resetLevel();
+
+kissing=false;
+
+}
+
+function kissScene(){
+
+kissing=true;
+
+ctx.clearRect(0,0,420,420);
+
+ctx.beginPath();
+ctx.arc(200,200,40,0,Math.PI*2);
+ctx.fillStyle="yellow";
+ctx.fill();
+
+ctx.beginPath();
+ctx.arc(260,200,40,0,Math.PI*2);
+ctx.fillStyle="green";
+ctx.fill();
+
+ctx.font="80px Arial";
+ctx.fillText("💋",200,220);
+
+ctx.fillStyle="white";
+ctx.font="26px Arial";
+ctx.fillText("Nainy ka dil",130,300);
+
+ctx.fillText("Shubman Gill ❤️",100,330);
+
+setTimeout(nextLevel,3000);
+
+}
+
+function chase(enemy,speed){
+
+let dx=nainy.x-enemy.x;
+let dy=nainy.y-enemy.y;
+
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+enemy.x+=(dx/dist)*speed;
+enemy.y+=(dy/dist)*speed;
+
+}
+
+function update(){
+
+if(kissing) return;
+
+nainy.x+=moveX;
+nainy.y+=moveY;
+
+/* KEEP NAINY INSIDE WALLS */
+
+nainy.x=Math.max(15,Math.min(canvas.width-15,nainy.x));
+nainy.y=Math.max(15,Math.min(canvas.height-15,nainy.y));
+
+let rivalSpeed=0.4+level*0.15;
+let saraSpeed=0.7+level*0.2;
+
+rivals.forEach(r=>{
+chase(r,rivalSpeed);
+});
+
+chase(sara,saraSpeed);
+
+checkCollisions();
+draw();
+
+}
+
+setInterval(update,30);
+
+draw();
+
+
+/* KEYBOARD CONTROLS */
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="ArrowUp") moveY=-3;
+if(e.key==="ArrowDown") moveY=3;
+if(e.key==="ArrowLeft") moveX=-3;
+if(e.key==="ArrowRight") moveX=3;
+
+});
+
+document.addEventListener("keyup",function(){
+moveX=0;
+moveY=0;
+});
+
+
+/* JOYSTICK CONTROLS */
+
+const stick=document.getElementById("joystick");
+
+stick.addEventListener("touchmove",function(e){
+
+let rect=stick.parentElement.getBoundingClientRect();
+
+let x=e.touches[0].clientX-rect.left-60;
+let y=e.touches[0].clientY-rect.top-60;
+
+moveX=x*0.05;
+moveY=y*0.05;
+
+});
+
+stick.addEventListener("touchend",function(){
+moveX=0;
+moveY=0;
+});
+
+</script>
+
+</body>
+</html>
