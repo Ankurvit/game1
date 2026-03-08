@@ -15,6 +15,7 @@ background:black;
 color:white;
 font-family:Arial;
 text-align:center;
+overflow:hidden;
 }
 
 #hud{
@@ -28,16 +29,24 @@ display:block;
 margin:auto;
 }
 
-button{
-width:70px;
-height:70px;
-font-size:30px;
-margin:5px;
-touch-action:manipulation;
+#joystickBase{
+position:fixed;
+bottom:40px;
+left:40px;
+width:120px;
+height:120px;
+background:rgba(255,255,255,0.1);
+border-radius:60px;
 }
 
-.controls{
-margin-top:10px;
+#joystick{
+position:absolute;
+width:60px;
+height:60px;
+background:white;
+border-radius:30px;
+left:30px;
+top:30px;
 }
 
 </style>
@@ -49,16 +58,8 @@ margin-top:10px;
 
 <canvas id="game" width="420" height="420"></canvas>
 
-<div class="controls">
-
-<button id="up">▲</button><br>
-
-<button id="left">◀</button>
-
-<button id="down">▼</button>
-
-<button id="right">▶</button>
-
+<div id="joystickBase">
+<div id="joystick"></div>
 </div>
 
 <script>
@@ -80,7 +81,8 @@ let rivals=[
 
 let sara={name:"Sara",x:220,y:360};
 
-let currentDirection=null;
+let moveX=0;
+let moveY=0;
 
 function drawCharacter(c,color,label){
 
@@ -126,19 +128,6 @@ drawSpeechBubble();
 
 }
 
-function move(dir){
-
-if(kissing) return;
-
-if(dir==="up") nainy.y-=3;
-if(dir==="down") nainy.y+=3;
-if(dir==="left") nainy.x-=3;
-if(dir==="right") nainy.x+=3;
-
-checkCollisions();
-
-}
-
 function distance(a,b){
 return Math.hypot(a.x-b.x,a.y-b.y);
 }
@@ -148,27 +137,19 @@ function checkCollisions(){
 for(let r of rivals){
 
 if(distance(nainy,r)<20){
-
 document.getElementById("hud").innerText="Caught by rival girls! Level "+level;
-
 resetLevel();
-
 }
 
 }
 
 if(distance(nainy,sara)<20){
-
 document.getElementById("hud").innerText="Sara caught Nainy! Level "+level;
-
 resetLevel();
-
 }
 
 if(distance(nainy,shubman)<20){
-
 kissScene();
-
 }
 
 }
@@ -237,9 +218,8 @@ function update(){
 
 if(kissing) return;
 
-if(currentDirection){
-move(currentDirection);
-}
+nainy.x+=moveX;
+nainy.y+=moveY;
 
 let rivalSpeed=0.4+level*0.15;
 let saraSpeed=0.7+level*0.2;
@@ -259,36 +239,44 @@ setInterval(update,30);
 
 draw();
 
+
+/* KEYBOARD */
+
 document.addEventListener("keydown",function(e){
 
-if(e.key==="ArrowUp") currentDirection="up";
-if(e.key==="ArrowDown") currentDirection="down";
-if(e.key==="ArrowLeft") currentDirection="left";
-if(e.key==="ArrowRight") currentDirection="right";
+if(e.key==="ArrowUp") moveY=-3;
+if(e.key==="ArrowDown") moveY=3;
+if(e.key==="ArrowLeft") moveX=-3;
+if(e.key==="ArrowRight") moveX=3;
 
 });
 
 document.addEventListener("keyup",function(){
-currentDirection=null;
+moveX=0;
+moveY=0;
 });
 
-function startMove(dir){
-currentDirection=dir;
-}
 
-function stopMove(){
-currentDirection=null;
-}
+/* JOYSTICK */
 
-document.getElementById("up").addEventListener("touchstart",()=>startMove("up"));
-document.getElementById("down").addEventListener("touchstart",()=>startMove("down"));
-document.getElementById("left").addEventListener("touchstart",()=>startMove("left"));
-document.getElementById("right").addEventListener("touchstart",()=>startMove("right"));
+const stick=document.getElementById("joystick");
 
-document.getElementById("up").addEventListener("touchend",stopMove);
-document.getElementById("down").addEventListener("touchend",stopMove);
-document.getElementById("left").addEventListener("touchend",stopMove);
-document.getElementById("right").addEventListener("touchend",stopMove);
+stick.addEventListener("touchmove",function(e){
+
+let rect=stick.parentElement.getBoundingClientRect();
+
+let x=e.touches[0].clientX-rect.left-60;
+let y=e.touches[0].clientY-rect.top-60;
+
+moveX=x*0.05;
+moveY=y*0.05;
+
+});
+
+stick.addEventListener("touchend",function(){
+moveX=0;
+moveY=0;
+});
 
 </script>
 
