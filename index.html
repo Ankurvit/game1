@@ -1,177 +1,270 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nainy Crush Chase</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+#hud{
+font-size:22px;
+margin:10px;
+}
+
+canvas{
+background:#111;
+display:block;
+margin:auto;
+}
+
+button{
+width:70px;
+height:70px;
+font-size:30px;
+margin:5px;
+}
+
+.controls{
+margin-top:10px;
+}
+
+</style>
 </head>
+
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;title&gt;Nainy Crush Maze&lt;/title&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;style&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">body{</span></p>
-<p class="p1"><span class="s1">margin:0;</span></p>
-<p class="p1"><span class="s1">background:black;</span></p>
-<p class="p1"><span class="s1">color:white;</span></p>
-<p class="p1"><span class="s1">font-family:Arial;</span></p>
-<p class="p1"><span class="s1">text-align:center;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">canvas{</span></p>
-<p class="p1"><span class="s1">background:#111;</span></p>
-<p class="p1"><span class="s1">display:block;</span></p>
-<p class="p1"><span class="s1">margin:auto;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">#msg{</span></p>
-<p class="p1"><span class="s1">font-size:22px;</span></p>
-<p class="p1"><span class="s1">margin:10px;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">.controls{</span></p>
-<p class="p1"><span class="s1">margin-top:10px;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">button{</span></p>
-<p class="p1"><span class="s1">width:70px;</span></p>
-<p class="p1"><span class="s1">height:70px;</span></p>
-<p class="p1"><span class="s1">font-size:30px;</span></p>
-<p class="p1"><span class="s1">margin:5px;</span></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;div id="msg"&gt;Guide Nainy to Shubman Gill!&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;canvas id="game" width="400" height="400"&gt;&lt;/canvas&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;div class="controls"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;br&gt;</span></p>
-<p class="p1"><span class="s1">&lt;button onclick="move('up')"&gt;▲&lt;/button&gt;&lt;br&gt;</span></p>
-<p class="p1"><span class="s1">&lt;button onclick="move('left')"&gt;◀&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">&lt;button onclick="move('down')"&gt;▼&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">&lt;button onclick="move('right')"&gt;▶&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;script&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">const canvas = document.getElementById("game");</span></p>
-<p class="p1"><span class="s1">const ctx = canvas.getContext("2d");</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">let nainy = {x:50,y:50};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">let rivals = [</span></p>
-<p class="p1"><span class="s1">{name:"Girl1",x:300,y:50},</span></p>
-<p class="p1"><span class="s1">{name:"Girl2",x:300,y:200},</span></p>
-<p class="p1"><span class="s1">{name:"Girl3",x:50,y:300}</span></p>
-<p class="p1"><span class="s1">];</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">let sara = {name:"Sara",x:200,y:300};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">let shubman = {x:350,y:350};</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function drawCharacter(x,y,color,label){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">ctx.fillStyle=color;</span></p>
-<p class="p1"><span class="s1">ctx.beginPath();</span></p>
-<p class="p1"><span class="s1">ctx.arc(x,y,15,0,Math.PI*2);</span></p>
-<p class="p1"><span class="s1">ctx.fill();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">ctx.fillStyle="white";</span></p>
-<p class="p1"><span class="s1">ctx.font="12px Arial";</span></p>
-<p class="p1"><span class="s1">ctx.fillText(label,x-20,y-20);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function draw(){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">ctx.clearRect(0,0,400,400);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">drawCharacter(nainy.x,nainy.y,"yellow","Nainy");</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">rivals.forEach(r=&gt;{</span></p>
-<p class="p1"><span class="s1">drawCharacter(r.x,r.y,"pink",r.name);</span></p>
-<p class="p1"><span class="s1">});</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">drawCharacter(sara.x,sara.y,"red","Sara");</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">drawCharacter(shubman.x,shubman.y,"green","Shubman Gill");</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function move(dir){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">if(dir==="up") nainy.y-=20;</span></p>
-<p class="p1"><span class="s1">if(dir==="down") nainy.y+=20;</span></p>
-<p class="p1"><span class="s1">if(dir==="left") nainy.x-=20;</span></p>
-<p class="p1"><span class="s1">if(dir==="right") nainy.x+=20;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">checkCollisions();</span></p>
-<p class="p1"><span class="s1">draw();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function distance(a,b){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">return Math.hypot(a.x-b.x,a.y-b.y);</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function checkCollisions(){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">for(let r of rivals){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">if(distance(nainy,r)&lt;20){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">document.getElementById("msg").innerText="Nainy lost! Rival girl blocked her.";</span></p>
-<p class="p1"><span class="s1">reset();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">if(distance(nainy,sara)&lt;20){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">document.getElementById("msg").innerText="Sara defeated Nainy!";</span></p>
-<p class="p1"><span class="s1">reset();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">if(distance(nainy,shubman)&lt;20){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">document.getElementById("msg").innerText="❤️ nainy ka dil. Shubman gill ❤️";</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">function reset(){</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">nainy.x=50;</span></p>
-<p class="p1"><span class="s1">nainy.y=50;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">draw();</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+
+<div id="hud">Level: 1 | Reach Shubman Gill!</div>
+
+<canvas id="game" width="420" height="420"></canvas>
+
+<div class="controls">
+
+<button onclick="move('up')">▲</button><br>
+
+<button onclick="move('left')">◀</button>
+
+<button onclick="move('down')">▼</button>
+
+<button onclick="move('right')">▶</button>
+
+</div>
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+let level=1;
+let kissing=false;
+
+let nainy={x:60,y:60};
+let shubman={x:380,y:380};
+
+let rivals=[
+{name:"Girl1",x:360,y:60},
+{name:"Girl2",x:360,y:200},
+{name:"Girl3",x:60,y:360}
+];
+
+let sara={name:"Sara",x:220,y:360};
+
+function drawCharacter(c,color,label){
+
+ctx.fillStyle=color;
+ctx.beginPath();
+ctx.arc(c.x,c.y,15,0,Math.PI*2);
+ctx.fill();
+
+ctx.fillStyle="white";
+ctx.font="12px Arial";
+ctx.fillText(label,c.x-25,c.y-20);
+
+}
+
+function drawSpeechBubble(){
+
+ctx.fillStyle="white";
+ctx.fillRect(sara.x-40,sara.y-50,140,30);
+
+ctx.fillStyle="black";
+ctx.font="12px Arial";
+ctx.fillText("Shubman is mine!",sara.x-35,sara.y-30);
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,420,420);
+
+drawCharacter(nainy,"yellow","Nainy");
+
+rivals.forEach(r=>{
+drawCharacter(r,"pink",r.name);
+});
+
+drawCharacter(sara,"red","Sara");
+
+drawCharacter(shubman,"green","Shubman Gill");
+
+if(distance(nainy,sara)<120){
+drawSpeechBubble();
+}
+
+}
+
+function move(dir){
+
+if(kissing) return;
+
+if(dir==="up") nainy.y-=20;
+if(dir==="down") nainy.y+=20;
+if(dir==="left") nainy.x-=20;
+if(dir==="right") nainy.x+=20;
+
+checkCollisions();
+
+}
+
+function distance(a,b){
+return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function checkCollisions(){
+
+for(let r of rivals){
+
+if(distance(nainy,r)<20){
+
+document.getElementById("hud").innerText="Caught by rival girls! Level "+level;
+
+resetLevel();
+
+}
+
+}
+
+if(distance(nainy,sara)<20){
+
+document.getElementById("hud").innerText="Sara caught Nainy! Level "+level;
+
+resetLevel();
+
+}
+
+if(distance(nainy,shubman)<20){
+
+kissScene();
+
+}
+
+}
+
+function resetLevel(){
+
+nainy.x=60;
+nainy.y=60;
+
+}
+
+function nextLevel(){
+
+level++;
+
+document.getElementById("hud").innerText="Level: "+level+" | Reach Shubman Gill!";
+
+resetLevel();
+
+kissing=false;
+
+}
+
+function kissScene(){
+
+kissing=true;
+
+ctx.clearRect(0,0,420,420);
+
+ctx.beginPath();
+ctx.arc(200,200,40,0,Math.PI*2);
+ctx.fillStyle="yellow";
+ctx.fill();
+
+ctx.beginPath();
+ctx.arc(260,200,40,0,Math.PI*2);
+ctx.fillStyle="green";
+ctx.fill();
+
+ctx.font="80px Arial";
+ctx.fillText("💋",200,220);
+
+ctx.fillStyle="white";
+ctx.font="26px Arial";
+ctx.fillText("Nainy ka dil",130,300);
+
+ctx.fillText("Shubman Gill ❤️",100,330);
+
+setTimeout(nextLevel,3000);
+
+}
+
+function chase(enemy,speed){
+
+let dx=nainy.x-enemy.x;
+let dy=nainy.y-enemy.y;
+
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+enemy.x+=(dx/dist)*speed;
+enemy.y+=(dy/dist)*speed;
+
+}
+
+function update(){
+
+if(kissing) return;
+
+let rivalSpeed=0.5+level*0.2;
+let saraSpeed=0.8+level*0.25;
+
+rivals.forEach(r=>{
+chase(r,rivalSpeed);
+});
+
+chase(sara,saraSpeed);
+
+checkCollisions();
+draw();
+
+}
+
+setInterval(update,30);
+
+draw();
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="ArrowUp") move("up");
+
+if(e.key==="ArrowDown") move("down");
+
+if(e.key==="ArrowLeft") move("left");
+
+if(e.key==="ArrowRight") move("right");
+
+});
+
+</script>
+
 </body>
 </html>
