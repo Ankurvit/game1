@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>Ankur's Game</title>
+
+<style>
+
+html,body{
+margin:0;
+padding:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+touch-action:none;
+overscroll-behavior:none;
+}
+
+#hud{
+font-size:20px;
+margin:10px;
+}
+
+canvas{
+background:#111;
+display:block;
+margin:auto;
+}
+
+#kiss{
+position:fixed;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:40px;
+display:none;
+}
+
+#gameover{
+position:fixed;
+top:45%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:50px;
+color:red;
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="hud"></div>
+
+<div id="kiss">
+💋<br>
+Nainy ka dil<br>
+Shubman Gill ❤️
+</div>
+
+<div id="gameover">GAME OVER</div>
+
+<canvas id="game" width="420" height="420"></canvas>
+
+<script>
+
+/* FULLSCREEN */
+
+document.body.addEventListener("click",()=>{
+if(document.documentElement.requestFullscreen){
+document.documentElement.requestFullscreen();
+}
+});
+
+/* BLOCK SCROLL */
+
+document.body.addEventListener("touchmove",e=>{
+e.preventDefault();
+},{passive:false});
+
+/* GAME SETUP */
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+let level=1;
+let score=0;
+let lives=5;
+
+let targetX=60;
+let targetY=60;
+
+let moveSpeed=2;
+
+let freeze=false;
+let gameRunning=true;
+
+let nainy={x:60,y:60};
+let shubman={x:350,y:350};
+
+/* GIRLS */
+
+let rivals=[
+{x:350,y:60,name:"Girl1",offset:1},
+{x:60,y:350,name:"Girl2",offset:2},
+{x:200,y:200,name:"Girl3",offset:3}
+];
+
+/* SARA */
+
+let sara={
+x:200,
+y:350,
+name:"Sara"
+};
+
+let foods=[];
+let heart=null;
+
+/* MUSIC */
+
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+
+function music(){
+
+let osc=audioCtx.createOscillator();
+let gain=audioCtx.createGain();
+
+osc.frequency.value=220;
+gain.gain.value=0.05;
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+
+osc.start();
+
+setInterval(()=>{
+osc.frequency.value=200+Math.random()*120;
+},400);
+
+}
+
+music();
+
+/* HUD */
+
+function updateHUD(){
+
+let hearts="";
+
+for(let i=0;i<lives;i++) hearts+="❤️";
+
+document.getElementById("hud").innerText=
+"Level "+level+" | Score "+score+" | Lives "+hearts;
+
+}
+
+/* SPAWN */
+
+function spawnFood(){
+
+foods=[];
+
+for(let i=0;i<30;i++){
+
+foods.push({
+x:Math.random()*380+20,
+y:Math.random()*380+20
+});
+
+}
+
+heart={
+x:Math.random()*380+20,
+y:Math.random()*380+20
+};
+
+}
+
+/* DRAW */
+
+function drawChar(x,y,emoji,label){
+
+ctx.font="22px Arial";
+ctx.fillText(emoji,x,y);
+
+ctx.font="11px Arial";
+ctx.fillStyle="white";
+ctx.fillText(label,x-20,y-10);
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,420,420);
+
+/* breadcrumbs */
+
+foods.forEach(f=>{
+ctx.fillStyle="yellow";
+ctx.beginPath();
+ctx.arc(f.x,f.y,3,0,Math.PI*2);
+ctx.fill();
+});
+
+/* heart */
+
+if(heart){
+ctx.font="18px Arial";
+ctx.fillText("💖",heart.x,heart.y);
+}
+
+/* player */
+
+drawChar(nainy.x,nainy.y,"👩","Nainy");
+
+/* girls */
+
+rivals.forEach(g=>{
+drawChar(g.x,g.y,"👧",g.name);
+});
+
+/* sara */
+
+drawChar(sara.x,sara.y,"😈","Sara");
+
+/* sara speech */
+
+if(distance(nainy,sara)<120){
+
+ctx.fillStyle="white";
+ctx.fillRect(sara.x-65,sara.y-60,130,25);
+
+ctx.fillStyle="black";
+ctx.font="12px Arial";
+ctx.fillText("Shubman is mine!",sara.x-60,sara.y-43);
+
+}
+
+/* shubman */
+
+drawChar(shubman.x,shubman.y,"🧔🏏","Shubman Gill");
+
+}
+
+/* DISTANCE */
+
+function distance(a,b){
+return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+/* PLAYER MOVEMENT */
+
+function movePlayer(){
+
+let dx=targetX-nainy.x;
+let dy=targetY-nainy.y;
+
+let d=Math.sqrt(dx*dx+dy*dy);
+
+if(d>1){
+
+nainy.x+=dx/d*moveSpeed;
+nainy.y+=dy/d*moveSpeed;
+
+}
+
+}
+
+/* SURROUND AI */
+
+function chase(e,speed){
+
+let targetX=nainy.x;
+let targetY=nainy.y;
+
+if(e.name==="Girl2"){
+targetX += 60;
+targetY -= 40;
+}
+
+else if(e.name==="Girl3"){
+targetX -= 60;
+targetY += 40;
+}
+
+else if(e.name.startsWith("Girl") && e.name!=="Girl1"){
+targetX += Math.sin(Date.now()/500 + e.offset)*80;
+targetY += Math.cos(Date.now()/500 + e.offset)*80;
+}
+
+let dx=targetX-e.x;
+let dy=targetY-e.y;
+
+let d=Math.sqrt(dx*dx+dy*dy);
+
+e.x+=(dx/d)*speed;
+e.y+=(dy/d)*speed;
+
+}
+
+/* RESET */
+
+function reset(){
+
+nainy.x=60;
+nainy.y=60;
+
+targetX=60;
+targetY=60;
+
+shubman.x=Math.random()*380+20;
+shubman.y=Math.random()*380+20;
+
+spawnFood();
+updateHUD();
+
+}
+
+/* ADD GIRL */
+
+function addNewGirl(){
+
+let n=rivals.length+1;
+
+rivals.push({
+x:Math.random()*380,
+y:Math.random()*380,
+name:"Girl"+n,
+offset:n
+});
+
+}
+
+/* WIN */
+
+function win(){
+
+score+=500;
+updateHUD();
+
+let kiss=document.getElementById("kiss");
+
+kiss.style.display="block";
+
+setTimeout(()=>{
+kiss.style.display="none";
+},2000);
+
+level++;
+
+if(level%5===0){
+addNewGirl();
+}
+
+reset();
+
+}
+
+/* LOSE */
+
+function lose(){
+
+lives--;
+
+if(lives<=0){
+
+gameRunning=false;
+document.getElementById("gameover").style.display="block";
+return;
+
+}
+
+reset();
+
+}
+
+/* UPDATE */
+
+function update(){
+
+if(!gameRunning) return;
+
+movePlayer();
+
+let rivalSpeed=0.25+level*0.04;
+let saraSpeed=0.35+level*0.05;
+
+if(!freeze){
+
+rivals.forEach(g=>chase(g,rivalSpeed));
+chase(sara,saraSpeed);
+
+}
+
+/* collect breadcrumbs */
+
+foods=foods.filter(f=>{
+
+if(distance(nainy,f)<10){
+
+score+=10;
+updateHUD();
+return false;
+
+}
+
+return true;
+
+});
+
+/* heart */
+
+if(heart && distance(nainy,heart)<15){
+
+freeze=true;
+heart=null;
+
+setTimeout(()=>{
+freeze=false;
+},3000);
+
+}
+
+/* reach shubman */
+
+if(distance(nainy,shubman)<20) win();
+
+/* collisions */
+
+rivals.forEach(g=>{
+if(distance(nainy,g)<20) lose();
+});
+
+if(distance(nainy,sara)<20) lose();
+
+draw();
+
+}
+
+setInterval(update,30);
+
+spawnFood();
+updateHUD();
+
+/* TOUCH CONTROL */
+
+canvas.addEventListener("touchstart",e=>{
+
+let rect=canvas.getBoundingClientRect();
+
+targetX=e.touches[0].clientX-rect.left;
+targetY=e.touches[0].clientY-rect.top;
+
+});
+
+canvas.addEventListener("touchmove",e=>{
+
+let rect=canvas.getBoundingClientRect();
+
+targetX=e.touches[0].clientX-rect.left;
+targetY=e.touches[0].clientY-rect.top;
+
+});
+
+/* KEYBOARD */
+
+document.addEventListener("keydown",e=>{
+
+if(e.key==="ArrowUp") targetY-=40;
+if(e.key==="ArrowDown") targetY+=40;
+if(e.key==="ArrowLeft") targetX-=40;
+if(e.key==="ArrowRight") targetX+=40;
+
+});
+
+</script>
+
+</body>
+</html>
